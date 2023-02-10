@@ -6,26 +6,22 @@ from tqdm import tqdm
 
 def video_to_frames(input_dir, output_dir):
     dirs = sorted(os.listdir(input_dir))
-    print("input_dir", input_dir)
-    print(dirs)
 
     for video_path  in tqdm(dirs):
-        print("video_path ->", video_path)
         video_path_tmp = os.path.join(input_dir, video_path)
-        # print("video_path_tmp ->", video_path_tmp)
 
         videoCapture = cv2.VideoCapture()
         videoCapture.open(video_path_tmp)
         # ФПС и суммарное количество кадров
         fps = videoCapture.get(cv2.CAP_PROP_FPS)
         frames = videoCapture.get(cv2.CAP_PROP_FRAME_COUNT)
-        print("fps=", int(fps), "frames=", int(frames))
 
         # dir_number = -1;
         # dir_name = ""
 
         output_video_dir = os.path.join(output_dir, video_path)
-        os.makedirs(output_video_dir)
+        if not os.path.exists(output_video_dir):
+            os.makedirs(output_video_dir)
 
         for i in range(int(frames)):
             ret, frame = videoCapture.read()
