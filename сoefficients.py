@@ -12,7 +12,6 @@ import numpy as np
 from scipy.stats import kendalltau
 import time
 
-# from ./coefficients import
 
 
 # In[2]:
@@ -137,39 +136,39 @@ def kendall_coefficient(image1, image2, show=False, prin=False):
 # In[7]:
 
 
-def main():
-    IN_PATH = "/home/jasmine/Tanimoto_Coefficient/input"
-    
-    file_names = sorted(os.listdir(IN_PATH))
-    
-    print(file_names)
-    
-    image_path_1 = os.path.join(IN_PATH, file_names[0])
-    image_path_2 = os.path.join(IN_PATH, file_names[2])
-    print(image_path_1)
-    print(image_path_2)
-    
-    
-    image_1 = load_image(image_path_1)
-    image_2 = load_image(image_path_2)
-    
-    print('\n')
-    time_start = time.time()
-    buf1 = tanimoto_coefficient(image_1, image_2, prin=True)
-    time_end = time.time()
-    print("Время работы:", time_end - time_start, '\n')
-        
-    time_start = time.time()
-    buf2 = cross_correlation_coefficient(image_1, image_2, prin=True)
-    time_end = time.time()
-    print("Время работы:", time_end - time_start, '\n')
-
-    time_start = time.time()
-    buf3 = kendall_coefficient(image_1, image_2, prin=True)
-    time_end = time.time()
-    print("Время работы:", time_end - time_start, '\n')
-    
-main()
+# def main():
+#     IN_PATH = "/home/jasmine/Tanimoto_Coefficient/input"
+#
+#     file_names = sorted(os.listdir(IN_PATH))
+#
+#     print(file_names)
+#
+#     image_path_1 = os.path.join(IN_PATH, file_names[0])
+#     image_path_2 = os.path.join(IN_PATH, file_names[2])
+#     print(image_path_1)
+#     print(image_path_2)
+#
+#
+#     image_1 = load_image(image_path_1)
+#     image_2 = load_image(image_path_2)
+#
+#     print('\n')
+#     time_start = time.time()
+#     buf1 = tanimoto_coefficient(image_1, image_2, prin=True)
+#     time_end = time.time()
+#     print("Время работы:", time_end - time_start, '\n')
+#
+#     time_start = time.time()
+#     buf2 = cross_correlation_coefficient(image_1, image_2, prin=True)
+#     time_end = time.time()
+#     print("Время работы:", time_end - time_start, '\n')
+#
+#     time_start = time.time()
+#     buf3 = kendall_coefficient(image_1, image_2, prin=True)
+#     time_end = time.time()
+#     print("Время работы:", time_end - time_start, '\n')
+#
+# main()
 
 
 # # Множество пар изображений
@@ -177,61 +176,61 @@ main()
 # In[8]:
 
 
-def many_test(IN_PATH, file_names):
-    previous_file = ""
-    
-    points1 = np.array([0])
-    points2 = np.array([0])
-    points3 = np.array([0])
-    
-    for file in file_names:
-        if (previous_file != ""):
-#             print(previous_file + " " + file)
-            image1 = load_image(path=os.path.join(IN_PATH, previous_file), show=False)
-            image2 = load_image(path=os.path.join(IN_PATH, file), show=False)
-            
-            buf1 = tanimoto_coefficient(image1, image2, show=False)
-            buf2 = cross_correlation_coefficient(image1, image2)
-            buf3 = kendall_coefficient(image1, image2)
-            
-            points1 = np.append(points1, buf1)
-            points2 = np.append(points2, buf2)
-            points3 = np.append(points3, buf3)
-            
-            
-            
-        previous_file = file
-    
-    
-    plt.figure(figsize = (15, 5))
-    plt.axis([0, 228, 0.6, 1.0])
-    plt.plot(range(len(file_names)), points1, 'r')
-    plt.plot(range(len(file_names)), points2, 'g')
-    plt.plot(range(len(file_names)), points3, 'b')
-    plt.legend(['Коэффициент Танимото',
-                'Кросс-корреляция изображений',
-                'Коэффициент ранговой корреляции Кендалла'], loc=0)
-    plt.show()
+# def many_test(IN_PATH, file_names):
+#     previous_file = ""
+#
+#     points1 = np.array([0])
+#     points2 = np.array([0])
+#     points3 = np.array([0])
+#
+#     for file in file_names:
+#         if (previous_file != ""):
+# #             print(previous_file + " " + file)
+#             image1 = load_image(path=os.path.join(IN_PATH, previous_file), show=False)
+#             image2 = load_image(path=os.path.join(IN_PATH, file), show=False)
+#
+#             buf1 = tanimoto_coefficient(image1, image2, show=False)
+#             buf2 = cross_correlation_coefficient(image1, image2)
+#             buf3 = kendall_coefficient(image1, image2)
+#
+#             points1 = np.append(points1, buf1)
+#             points2 = np.append(points2, buf2)
+#             points3 = np.append(points3, buf3)
+#
+#
+#
+#         previous_file = file
+#
+#
+#     plt.figure(figsize = (15, 5))
+#     plt.axis([0, 228, 0.6, 1.0])
+#     plt.plot(range(len(file_names)), points1, 'r')
+#     plt.plot(range(len(file_names)), points2, 'g')
+#     plt.plot(range(len(file_names)), points3, 'b')
+#     plt.legend(['Коэффициент Танимото',
+#                 'Кросс-корреляция изображений',
+#                 'Коэффициент ранговой корреляции Кендалла'], loc=0)
+#     plt.show()
 
 
 # In[9]:
 
 
-def main():
-    IN_PATH = "/home/jasmine/Tanimoto_Coefficient/_CuZqXrhEZI_5.mp4222"
-    file_names = sorted(os.listdir(IN_PATH))
-    many_test(IN_PATH, file_names)
-main()
+# def main():
+#     IN_PATH = "/home/jasmine/Tanimoto_Coefficient/_CuZqXrhEZI_5.mp4222"
+#     file_names = sorted(os.listdir(IN_PATH))
+#     many_test(IN_PATH, file_names)
+# main()
 
 
 # In[10]:
 
 
-def main():
-    IN_PATH = "/home/jasmine/Tanimoto_Coefficient/_CuZqXrhEZI_5.mp4"
-    file_names = sorted(os.listdir(IN_PATH))
-    many_test(IN_PATH, file_names)
-main()
+# def main():
+#     IN_PATH = "/home/jasmine/Tanimoto_Coefficient/_CuZqXrhEZI_5.mp4"
+#     file_names = sorted(os.listdir(IN_PATH))
+#     many_test(IN_PATH, file_names)
+# main()
 
 
 # In[ ]:
