@@ -17,6 +17,7 @@ def video_to_frames(input_dir, output_dir):
     print(dirs)
 
     for video_path in tqdm(dirs):
+        print("Обработка", video_path)
 
         # Расшариваем видео в буфере (frames)
         video_path_tmp = os.path.join(input_dir, video_path)
@@ -38,7 +39,7 @@ def video_to_frames(input_dir, output_dir):
         coef_pair_frame_array = np.array([])
         for i in range(int(frames)):
             ret, frame = videoCapture.read()
-            # Заносим кадры в буффер
+            # Заносим кадры в буффер для дальнейшей обработки
             if (len(buf) == 0):
                 buf = np.expand_dims(frame, axis=0)
             else:
@@ -47,23 +48,57 @@ def video_to_frames(input_dir, output_dir):
 
 
                 # print("----------------------------------------------------------------")
-                # print(i - 1, i)
-                # print(buf[i - 1].shape, buf[i].shape)
                 # print("kendall_coefficient =", kendall_coefficient(buf[i - 1], buf[i]))
                 # print("cross_correlation_coefficient =", cross_correlation_coefficient(buf[i - 1], buf[i]))
                 # print("tanimoto_coefficient", tanimoto_coefficient(buf[i - 1], buf[i]))
 
-                coef_pair_frame = np.array([kendall_coefficient(buf[i - 1], buf[i]), i - 1, i])
-                # coef_pair_frame = np.expand_dims(coef_pair_frame, axis=0)
 
+                # Вычисляем корреляцию
+                coef_pair_frame = np.array([kendall_coefficient(buf[i - 1], buf[i]), i - 1, i])
+
+                # Записываем корреляцию для дальнейшего анализа
                 if (len(coef_pair_frame_array) == 0):
                     coef_pair_frame_array = np.expand_dims(coef_pair_frame, axis=0)
                 else:
                     coef_pair_frame_array = np.concatenate((coef_pair_frame_array, np.expand_dims(coef_pair_frame, axis=0)), axis=0)
 
+        # Нужно найти пары кадров с подходящей корреляцией
+        print(coef_pair_frame_array)
+        print(coef_pair_frame_array[:, 0])
+        print("Среднее ->", coef_pair_frame_array[:, 0].mean())
+
+        # К какой корреляции должны стремиться выбираемые кадры
+        need_coef = 0.985 # Нужно указыват ьв стартовых параметрах
+
+        # Сколько пар кадров берем из одного видео
+        need_count = 5
+        # На столько частей нам нужно поделить видео
+        # и выбрать в каждой части пару наиболее близкую к need_coef
+
+        # Проходим по участкам одинаковой длины
+        for i in range(need_count):
+            # Вычисляем длинну участка
+            frames_range_a = len(coef_pair_frame_array) // need_count + 1
+            frames_range_b = len(coef_pair_frame_array) // need_count + 1
+            print("frames_range ->", frames_range_b)
+            # Проверяем что не выходим за границы массива
+            print("IF", i * frames_range_b + frames_range_b - 1, "----", len(coef_pair_frame_array) - 1)
+            if i * frames_range_b + frames_range_b - 1 > len(coef_pair_frame_array) - 1:
+                # Вычисляем новую длину
+                frames_range_b += len(coef_pair_frame_array) - i * frames_range_b - frames_range_b
+                print("NEW frames_range ->", frames_range_b)
+
+            print(f"({i * frames_range_a}, { i * frames_range_a + frames_range_b - 1 })")
+            # Нужный срез
+            frames_coef = coef_pair_frame_array[227]
+
+
+
+
+
 
                 # print(coef_pair_frame_array.shape)
-        print(coef_pair_frame_array)
+
 
             # print(i + 1, "->", buf.shape)
     #
