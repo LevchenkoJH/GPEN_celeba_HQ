@@ -79,19 +79,20 @@ def video_to_frames(input_dir, output_dir):
         for i in range(need_count):
             # Вычисляем длинну участка
             frames_range_a = len(coef_pair_frame_array) // need_count + 1
-            frames_range_b = len(coef_pair_frame_array) // need_count + 1
-            print("frames_range ->", frames_range_b)
+            frames_range_b = frames_range_a
+            # print("frames_range ->", frames_range_b)
             # Проверяем что не выходим за границы массива
-            print("IF", i * frames_range_b + frames_range_b - 1, "----", len(coef_pair_frame_array) - 1)
+            # print("IF", i * frames_range_b + frames_range_b - 1, "----", len(coef_pair_frame_array) - 1)
             if i * frames_range_b + frames_range_b - 1 > len(coef_pair_frame_array) - 1:
                 # Вычисляем новую длину
                 frames_range_b += len(coef_pair_frame_array) - i * frames_range_b - frames_range_b
-                print("NEW frames_range ->", frames_range_b)
+                # print("NEW frames_range ->", frames_range_b)
 
             print(f"({i * frames_range_a}, { i * frames_range_a + frames_range_b - 1 })")
-            # Нужный срез
-            frames_coef = coef_pair_frame_array[227]
 
+            # Нужный срез
+            frames_coef = coef_pair_frame_array[i * frames_range_a : i * frames_range_a + frames_range_b]
+            print(frames_coef.shape)
 
 
 
