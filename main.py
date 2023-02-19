@@ -64,8 +64,8 @@ def video_to_frames(input_dir, output_dir):
 
         # Нужно найти пары кадров с подходящей корреляцией
         print(coef_pair_frame_array)
-        print(coef_pair_frame_array[:, 0])
-        print("Среднее ->", coef_pair_frame_array[:, 0].mean())
+        # print(coef_pair_frame_array[:, 0])
+        # print("Среднее ->", coef_pair_frame_array[:, 0].mean())
 
         # К какой корреляции должны стремиться выбираемые кадры
         need_coef = 0.985 # Нужно указыват ьв стартовых параметрах
@@ -92,51 +92,24 @@ def video_to_frames(input_dir, output_dir):
 
             # Нужный срез
             frames_coef = coef_pair_frame_array[i * frames_range_a : i * frames_range_a + frames_range_b]
-            print(frames_coef.shape)
 
             # Находим запись с корреляцией, абсолютное значение разности которого, с нужным коэффициентом - минимально
             condition = np.abs(frames_coef[:, 0] - need_coef)
             frames_coef = frames_coef[condition == np.min(condition)]
-            print(frames_coef.shape)
-            print(frames_coef)
 
             # Нужно учесть что в срезе может не быть ни одной пары
 
 
+            # Сохраняем выделенную пару в соответствующей папке
+            direction = os.path.join(output_dir, video_path, str(i).zfill(3) + " coef:" + str(frames_coef[0][0])[:6])
+            if not os.path.exists(direction):
+                os.makedirs(direction)
 
-                # print(coef_pair_frame_array.shape)
-
-
-            # print(i + 1, "->", buf.shape)
-    #
-    #
-    #     # print("buf.shape", buf.shape)
-
-
-
-        # for i in range(int(frames)):
-        #     ret, frame = videoCapture.read()
-        #     # Название кадра
-        #     file_name = str("%d.png" % (i))
-        #
-        #     ###################
-        #     # Если нужно уменьшить кадр
-        #     # frame = cv2.resize(frame, (int(frame.shape[1] / 4), int(frame.shape[0] / 4)))
-        #     ###################
-        #
-        #     ###################
-        #     # Записать видео разбив его по папкам, в данном случае по 40 кадров в каждой
-        #     # if i >= (dir_number + 1) * 40:
-        #     #     dir_number += 1
-        #     #     dir_name = str(dir_number).zfill(3)
-        #     #     os.mkdir("/home/jasmine/Framing/frames/" + dir_name)
-        #     # cv2.imwrite("/home/jasmine/Framing/frames/" + dir_name + "/" + file_name.zfill(9), frame)
-        #     ###################
-        #
-        #     ###################
-        #     # Все кадры в одной папке / название папки соответствует названию видео
-        #     cv2.imwrite(os.path.join(output_video_dir, file_name.zfill(9)), frame)
-        #     ###################
+            # Сохраняем пару кадров
+            print(os.path.join(direction, str(int(frames_coef[0][1])).zfill(5)))
+            print(os.path.join(direction, str(int(frames_coef[0][2])).zfill(5)))
+            cv2.imwrite(os.path.join(direction, str("%s.png" % str(int(frames_coef[0][1])).zfill(5))), buf[int(frames_coef[0][1])])
+            cv2.imwrite(os.path.join(direction, str("%s.png" % str(int(frames_coef[0][2])).zfill(5))), buf[int(frames_coef[0][2])])
 
 if __name__ == '__main__':
     time_start = datetime.now()
