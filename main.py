@@ -94,7 +94,13 @@ def video_to_frames(input_dir, output_dir):
             frames_coef = coef_pair_frame_array[i * frames_range_a : i * frames_range_a + frames_range_b]
             print(frames_coef.shape)
 
+            # Находим запись с корреляцией, абсолютное значение разности которого, с нужным коэффициентом - минимально
+            condition = np.abs(frames_coef[:, 0] - need_coef)
+            frames_coef = frames_coef[condition == np.min(condition)]
+            print(frames_coef.shape)
+            print(frames_coef)
 
+            # Нужно учесть что в срезе может не быть ни одной пары
 
 
 
